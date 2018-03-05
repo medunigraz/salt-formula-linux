@@ -35,7 +35,7 @@ linux_network_systemd_networkd:
   - name: systemd-networkd
   - init_delay: 10
   - enable: True
-  - reload: True
+  - reload: False
   - watch:
     - module: linux_network_systemd_reload
 
