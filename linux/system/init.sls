@@ -52,14 +52,18 @@ include:
 {%- if system.user|length > 0 %}
 - linux.system.user
 {%- endif %}
+{%- if system.group is defined %}
 {%- if system.group|length > 0 %}
 - linux.system.group
+{%- endif %}
 {%- endif %}
 {%- if system.rc is defined %}
 - linux.system.rc
 {%- endif %}
+{%- if system.job is defined %}
 {%- if system.job|length > 0 %}
 - linux.system.job
+{%- endif %}
 {%- endif %}
 {%- if grains.os_family == 'RedHat' %}
 - linux.system.selinux
@@ -76,11 +80,15 @@ include:
 {%- if system.console is defined %}
 - linux.system.console
 {%- endif %}
+{%- if system.limit is defined %}
 {%- if system.limit|length > 0 %}
 - linux.system.limit
 {%- endif %}
+{%- endif %}
+{%- if system.motd is defined %}
 {%- if system.motd|length > 0 %}
 - linux.system.motd
+{%- endif %}
 {%- endif %}
 {%- if system.get('policyrcd', [])|length > 0 %}
 - linux.system.policyrcd
