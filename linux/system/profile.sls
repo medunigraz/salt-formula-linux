@@ -7,6 +7,7 @@ profile.d_clean:
   - clean: true
   - exclude_pat: 'E@^((?!salt_profile*).)*$'
 
+{%- if system.profile is defined %}
 {%- if system.profile|length > 0 %}
 
 {%- for name, script in system.profile.items() %}
@@ -25,4 +26,4 @@ profile.d_script_{{ name  }}:
 
 {%- endif %}
 {%- endif %}
-
+{%- endif %}

@@ -7,6 +7,7 @@
   {%- endif -%}
 {%- endmacro -%}
 
+{%- if system.group is defined %}
 {%- for group_name, group in system.group.items() %}
 
 {%- if group.enabled %}
@@ -42,4 +43,4 @@ system_group_{{ group_name }}:
 {%- endfor %}
 
 {%- endif %}
-
+{%- endif %}

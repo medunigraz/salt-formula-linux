@@ -1,6 +1,7 @@
 {%- from "linux/map.jinja" import system with context %}
 {%- if system.enabled %}
 
+{%- if system.env is defined %}
 {%- if system.env|length > 0 %}
 
 linux_system_environment_proxies:
@@ -32,5 +33,6 @@ linux_system_environment_proxies:
   - backup: '.bak'
   - show_changes: True
 
+{%- endif %}
 {%- endif %}
 {%- endif %}
