@@ -3,12 +3,12 @@
 include:
 - linux.system.env
 - linux.system.profile
-{%- if 'repo' in system %}
+{%- if system.repo is defined %}
 {%- if system.repo|length > 0 %}
 - linux.system.repo
 {%- endif %}
 {%- endif %}
-{%- if 'pkgs' in system %}
+{%- if system.pkgs is defined %}
 {%- if system.pkgs|length > 0 %}
 - linux.system.package
 {%- endif %}
