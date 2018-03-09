@@ -3,10 +3,8 @@
 include:
 - linux.system.env
 - linux.system.profile
-{%- if system.repo is defined %}
-{%- if system.repo|length > 0 %}
+{%- if system.repo is defined or system.proxy.pkg is defined %}
 - linux.system.repo
-{%- endif %}
 {%- endif %}
 {%- if system.pkgs is defined %}
 {%- if system.pkgs|length > 0 %}
