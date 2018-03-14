@@ -1,8 +1,21 @@
 {%- from "linux/map.jinja" import system with context %}
 {%- if system.enabled %}
 
+{%- set sudo = False %}
+{%- for name, user in system.user.items() %}
+{%- if user.enabled %}
+{%- if user.sudo %}
+{%- set sudo = True %}
+{%- endif %}
+{%- endif %}
+{%- endfor %}
+
+
 include:
   - linux.system.group
+{%- if sudo %}
+  - linux.system.sudo
+{%- endif %}
 
 {%- for name, user in system.user.items() %}
 
@@ -52,6 +65,7 @@ system_user_home_{{ user.home }}:
   - require:
     - user: system_user_{{ name }}
 
+{%- if system.get('sudo', {}).get('enabled', False) %}
 {%- if user.get('sudo', False) %}
 
 /etc/sudoers.d/90-salt-user-{{ name|replace('.', '-') }}:
@@ -65,13 +79,15 @@ system_user_home_{{ user.home }}:
     user_name: {{ name }}
   - require:
     - user: system_user_{{ name }}
+    - pkg: linux_sudo_pkg_installed
   - check_cmd: /usr/sbin/visudo -c -f
 
 {%- else %}
 
 /etc/sudoers.d/90-salt-user-{{ name|replace('.', '-') }}:
   file.absent
-  
+
+{%- endif %}
 {%- endif %}
 
 {%- else %}
@@ -84,8 +100,10 @@ system_user_home_{{ user.home }}:
   file.absent:
   - name: {{ user.home }}
 
+{%- if system.get('sudo', {}).get('enabled', False) %}
 /etc/sudoers.d/90-salt-user-{{ name|replace('.', '-') }}:
   file.absent
+{%- endif %}
 
 {%- endif %}
 

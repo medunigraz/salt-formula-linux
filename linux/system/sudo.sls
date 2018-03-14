@@ -3,6 +3,10 @@
 
 {%- if system.get('sudo', {}).get('enabled', False) %}
 
+linux_sudo_pkg_installed:
+  pkg.installed:
+  - name: sudo
+
 {%- if system.get('sudo', {}).get('aliases', False) is mapping %}
 /etc/sudoers.d/90-salt-sudo-aliases:
   file.managed:
@@ -68,6 +72,10 @@
 /etc/sudoers.d/91-salt-sudo-groups:
   file.absent:
   - name: /etc/sudoers.d/91-salt-sudo-groups
+
+linux_sudo_pkg_removed:
+  pkg.removed:
+  - name: sudo
 
 {%- endif %}
 {%- endif %}
