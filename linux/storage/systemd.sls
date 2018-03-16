@@ -5,17 +5,9 @@
 
 {%- if mount.enabled %}
 
-{%- if mount.file_system == 'nfs' %}
-linux_storage_nfs_packages:
+{{ path.strip('/')|replace('/', '-') }}_packages:
   pkg.installed:
-  - pkgs: {{ storage.nfs.pkgs }}
-{%- endif %}
-
-{%- if mount.file_system == 'cifs' %}
-linux_storage_cifs_packages:
-  pkg.installed:
-  - pkgs: {{ storage.cifs.pkgs }}
-{%- endif %}
+  - pkgs: {{ storage.get(mount.file_system, {}).get('pkgs', []) }}
 
 /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount:
   file.managed:
@@ -32,12 +24,7 @@ linux_storage_cifs_packages:
         description: {{ mount.get('description', 'Salt managed mount') }}
         wanted_by: {{ mount.get('wanted_by', 'multi-user.target') }}
     - require:
-{%- if mount.file_system == 'nfs' %}
-      - pkg: linux_storage_nfs_packages
-{%- endif %}
-{%- if mount.file_system == 'cifs' %}
-      - pkg: linux_storage_cifs_packages
-{%- endif %}
+      - pkg: {{ path.strip('/')|replace('/', '-') }}_packages
 
 {{ path.strip('/')|replace('/', '-') }}.mount:
   service.running:
