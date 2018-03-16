@@ -1,7 +1,7 @@
 {%- from "linux/map.jinja" import storage with context %}
 {%- if storage.enabled %}
 
-{%- for path, mount in storage.systemd|dictsort %}
+{%- for path, mount in storage.systemd.items() %}
 
 {%- if mount.enabled %}
 

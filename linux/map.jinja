@@ -234,6 +234,7 @@
     },
     'Debian': {
         'mount': {},
+        'systemd': {},
         'swap': {},
         'lvm': {},
         'disk': {},
@@ -241,6 +242,9 @@
         'loopback': {},
         'nfs': {
              'pkgs': ['nfs-common']
+         },
+        'cifs': {
+             'pkgs': ['cifs-utils']
          },
         'multipath': {
              'enabled': False,
