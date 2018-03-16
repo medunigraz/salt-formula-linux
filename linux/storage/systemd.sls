@@ -31,9 +31,9 @@
     - enable: True
     - reload: False
     - require:
-      file: /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount
+      - file: /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount
     - watch:
-      file: /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount
+      - file: /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount
 
 {%- endif %}
 
