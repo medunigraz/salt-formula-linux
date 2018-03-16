@@ -20,7 +20,7 @@
         path: {{ path }}
         device: {{ mount.device }}
         type: {{ mount.file_system }}
-        options: {{ mount.get('opts', 'defaults,noatime') }}
+        options: {{ mount.get('options', 'defaults,noatime') }}
         description: {{ mount.get('description', 'Salt managed mount') }}
         wanted_by: {{ mount.get('wanted_by', 'multi-user.target') }}
     - require:
