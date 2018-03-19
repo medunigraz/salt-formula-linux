@@ -9,6 +9,20 @@
   pkg.installed:
   - pkgs: {{ storage.get(mount.file_system, {}).get('pkgs', []) }}
 
+{%- if not mount.file_system in ['nfs', 'nfs4', 'cifs', 'tmpfs'] %}
+mkfs_{{ mount.device }}:
+  cmd.run:
+  - name: 'mkfs.{{ mount.file_system }} -L "{{ mount.get('label', '') }}" {{ mount.device }}'
+  - onlyif: 'test `blkid {{ mount.device }} | grep -q TYPE;echo $?` -eq 1'
+  - require_in:
+    - service: {{ path.strip('/')|replace('/', '-') }}.mount
+  - require:
+    - pkg: {{ path.strip('/')|replace('/', '-') }}_packages
+{%- if mount.lvm is defined %}
+    - lvm: lvm_{{ mount.lvm.vg }}_lv_{{ mount.lvm.lv }}
+{%- endif %}
+{%- endif %}
+
 /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount:
   file.managed:
     - source: salt://linux/files/systemd-mount.conf
