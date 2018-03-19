@@ -19,7 +19,7 @@ mkfs_{{ mount.device }}:
   - require:
     - pkg: {{ path.strip('/')|replace('/', '-') }}_packages
 {%- if mount.lvm is defined %}
-    - lvm: lvm_vg_{{ mount.lvm.vg }}_lv_{{ mount.lvm.lv }}
+    - lvm: lvm_{{ mount.lvm.vg }}_lv_{{ mount.lvm.lv }}
 {%- endif %}
 {%- endif %}
 
