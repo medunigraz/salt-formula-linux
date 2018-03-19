@@ -49,6 +49,17 @@ mkfs_{{ mount.device }}:
     - watch:
       - file: /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount
 
+{%- if mount.user is defined %}
+{{ path.strip('/')|replace('/', '-') }}_permissions:
+  file.directory:
+    - name: {{ path }}
+    - user: {{ mount.user }}
+    - group: {{ mount.get('group', 'root') }}
+    - mode: {{ mount.get('mode', 755) }}
+    - require:
+      - service: {{ path.strip('/')|replace('/', '-') }}.mount
+{%- endif %}
+
 {%- endif %}
 
 {%- endfor %}
