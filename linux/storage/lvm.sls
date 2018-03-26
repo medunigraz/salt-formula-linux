@@ -49,7 +49,12 @@ lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
   lvm.lv_present:
     - name: {{ volume.get('name', lvname) }}
     - vgname: {{ vg.get('name', vgname) }}
+    {%- if volume.size is defined %}
     - size: {{ volume.size }}
+    {%- endif %}
+    {%- if volume.extents is defined %}
+    - extents: {{ volume.extents }}
+    {%- endif %}
     - require:
       - lvm: lvm_vg_{{ vg.get('name', vgname) }}
     {%- if volume.mount is defined %}
