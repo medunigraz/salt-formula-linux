@@ -43,7 +43,8 @@ lvm_vg_{{ vg.get('name', vgname) }}:
     - name: {{ vg.get('name', vgname) }}
     - devices: {{ vg.devices|join(',') }}
 
-{%- for lvname, volume in vg.get('volume', {}).items() %}
+{%- if vg.get('volume', None) %}
+{%- for lvname, volume in vg.volume.items() %}
 
 lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
   lvm.lv_present:
@@ -66,6 +67,7 @@ lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
     {%- endif %}
 
 {%- endfor %}
+{%- endif %}
 
 {%- endif %}
 
