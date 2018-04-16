@@ -4,7 +4,7 @@
 {%- set sudo = False %}
 {%- for name, user in system.user.items() %}
 {%- if user.enabled %}
-{%- if user.sudo %}
+{%- if user.get('sudo', False) %}
 {%- set sudo = True %}
 {%- endif %}
 {%- endif %}
