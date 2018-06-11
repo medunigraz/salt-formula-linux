@@ -28,6 +28,17 @@ include:
   {%- endif %}
 {%- endfor %}
 
+{%- if user.gid is not defined %}
+system_group_{{ name }}:
+  group.present:
+    - name: {{ name }}
+    {% if user.get('same_gid', False) and user.get('uid', None) %}
+    - gid: {{ user.uid }}
+    {% endif %}
+    - require_in:
+      - user: system_user_{{ name }}
+{%- endif %}
+
 system_user_{{ name }}:
   user.present:
   - name: {{ name }}
