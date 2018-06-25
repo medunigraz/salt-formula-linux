@@ -271,6 +271,7 @@
              'pkgs': [],
              'service': 'multipath'
          },
+        'lvm_pkgs': ['lvm2'],
     },
 }, grain='os_family', merge=salt['pillar.get']('linux:storage')) %}
 
