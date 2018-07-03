@@ -115,6 +115,9 @@ include:
 {%- if system.file is defined %}
 - linux.system.file
 {%- endif %}
+{%- if system.symlink is defined %}
+- linux.system.symlink
+{%- endif %}
 {%- if system.ld is defined %}
 - linux.system.ld
 {%- endif %}
