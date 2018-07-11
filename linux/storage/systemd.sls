@@ -4,8 +4,9 @@
 {%- for path, mount in storage.systemd.items() %}
 
 {%- if mount.enabled %}
+{%- set unit = salt['linux_systemd.escape_path'](path) %}
 
-{{ path.strip('/')|replace('/', '-') }}_packages:
+{{ unit }}_packages:
   pkg.installed:
   - pkgs: {{ storage.get(mount.file_system, {}).get('pkgs', []) }}
 
@@ -15,15 +16,15 @@ mkfs_{{ mount.device }}:
   - name: 'mkfs.{{ mount.file_system }} -L "{{ mount.get('label', '') }}" {{ mount.device }}'
   - onlyif: 'test `blkid {{ mount.device }} | grep -q TYPE;echo $?` -eq 1'
   - require_in:
-    - service: {{ path.strip('/')|replace('/', '-') }}.mount
+    - service: {{ unit }}.mount
   - require:
-    - pkg: {{ path.strip('/')|replace('/', '-') }}_packages
+    - pkg: {{ unit }}_packages
 {%- if mount.lvm is defined %}
     - lvm: lvm_{{ mount.lvm.vg }}_lv_{{ mount.lvm.lv }}
 {%- endif %}
 {%- endif %}
 
-/etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount:
+/etc/systemd/system/{{ unit }}.mount:
   file.managed:
     - source: salt://linux/files/systemd-mount.conf
     - user: root
@@ -38,26 +39,26 @@ mkfs_{{ mount.device }}:
         description: {{ mount.get('description', 'Salt managed mount') }}
         wanted_by: {{ mount.get('wanted_by', 'multi-user.target') }}
     - require:
-      - pkg: {{ path.strip('/')|replace('/', '-') }}_packages
+      - pkg: {{ unit }}_packages
 
-{{ path.strip('/')|replace('/', '-') }}.mount:
+{{ unit }}.mount:
   service.running:
     - enable: True
     - reload: False
     - require:
-      - file: /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount
+      - file: /etc/systemd/system/{{ unit }}.mount
     - watch:
-      - file: /etc/systemd/system/{{ path.strip('/')|replace('/', '-') }}.mount
+      - file: /etc/systemd/system/{{ unit }}.mount
 
 {%- if mount.user is defined %}
-{{ path.strip('/')|replace('/', '-') }}_permissions:
+{{ unit }}_permissions:
   file.directory:
     - name: {{ path }}
     - user: {{ mount.user }}
     - group: {{ mount.get('group', 'root') }}
     - mode: {{ mount.get('mode', 755) }}
     - require:
-      - service: {{ path.strip('/')|replace('/', '-') }}.mount
+      - service: {{ unit }}.mount
 {%- endif %}
 
 {%- endif %}
