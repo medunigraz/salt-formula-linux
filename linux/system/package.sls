@@ -1,6 +1,7 @@
 {%- from "linux/map.jinja" import system with context %}
 {%- if system.enabled %}
 
+{%- set pkgs_source = [] %}
 {%- set pkgs_groups = {
   'latest': [],
   'purged': [],
@@ -36,7 +37,9 @@ linux_extra_package_{{ name }}:
   - skip_verify: {{ "False" if package.verify else "True" }}
     {%- endif %}
   {%- else %}
-    {%- if package.version is not defined %}
+    {%- if package.source is defined %}
+      {%- do pkgs_source.append({name: package.source}) %}
+    {%- elif package.version is not defined %}
       {%- do pkgs_groups['installed'].append(name) %}
     {%- elif package.version in ('latest', 'purged', 'removed') %}
       {%- do pkgs_groups[package.version].append(name) %}
@@ -54,5 +57,11 @@ linux_extra_packages_{{ pkgs_group }}:
     - pkgs: {{ pkgs }}
   {%- endif %}
 {%- endfor %}
+
+{%- if pkgs_source %}
+linux_extra_packages_source:
+  pkg.installed:
+    - sources: {{ pkgs_source }}
+{%- endif %}
 
 {%- endif %}
