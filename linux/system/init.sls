@@ -127,3 +127,6 @@ include:
 {%- if system.auth is defined %}
 - linux.system.auth
 {%- endif %}
+{%- if system.acl is defined %}
+- linux.system.acl
+{%- endif %}
