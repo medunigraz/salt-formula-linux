@@ -23,6 +23,9 @@ linux_symlink_{{ symlink_name }}:
     {%- if symlink.mode is defined %}
     - mode: {{ symlink.mode }}
     {%- endif %}
+    {%- if symlink.force is defined %}
+    - force: {{ symlink.force }}
+    {%- endif %}
 
 {%- endfor %}
 
