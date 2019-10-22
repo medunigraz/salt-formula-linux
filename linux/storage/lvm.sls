@@ -3,7 +3,7 @@
 
 linux_lvm_pkgs:
   pkg.installed:
-  - pkgs: {{ storage.lvm_pkgs }}
+  - pkgs: {{ storage.lvm_pkgs | json }}
 
 
 /etc/lvm/lvm.conf:
@@ -48,6 +48,7 @@ lvm_vg_{{ vg.get('name', vgname) }}:
 
 lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
   lvm.lv_present:
+    - order: 1
     - name: {{ volume.get('name', lvname) }}
     - vgname: {{ vg.get('name', vgname) }}
     {%- if volume.size is defined %}
@@ -56,6 +57,7 @@ lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
     {%- if volume.extents is defined %}
     - extents: {{ volume.extents }}
     {%- endif %}
+    - force: true
     - require:
       - lvm: lvm_vg_{{ vg.get('name', vgname) }}
     {%- if volume.mount is defined %}

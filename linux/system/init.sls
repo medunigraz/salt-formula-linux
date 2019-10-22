@@ -3,7 +3,17 @@
 include:
 - linux.system.env
 - linux.system.profile
-{%- if system.repo is defined or system.proxy.pkg is defined %}
+- linux.system.shell
+{%- if system.login_defs is defined %}
+- linux.system.login_defs
+{%- endif %}
+{%- if system.at is defined %}
+- linux.system.at
+{%- endif %}
+{%- if system.cron is defined %}
+- linux.system.cron
+{%- endif %}
+{%- if system.repo|length > 0 or system.proxy.get('pkg', False) %}
 - linux.system.repo
 {%- endif %}
 {%- if system.pkgs is defined %}
@@ -129,4 +139,10 @@ include:
 {%- endif %}
 {%- if system.acl is defined %}
 - linux.system.acl
+{%- endif %}
+{%- if system.banner is defined %}
+- linux.system.banner
+{%- endif %}
+{%- if system.mcelog is defined %}
+- linux.system.mcelog
 {%- endif %}

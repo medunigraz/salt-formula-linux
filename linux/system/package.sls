@@ -54,7 +54,7 @@ linux_extra_package_{{ name }}:
   {%- if pkgs %}
 linux_extra_packages_{{ pkgs_group }}:
   pkg.{{ pkgs_group }}:
-    - pkgs: {{ pkgs }}
+    - pkgs: {{ pkgs | json }}
   {%- endif %}
 {%- endfor %}
 
