@@ -142,6 +142,8 @@ system_user_home_{{ user.home }}:
 
 {%- endif %}
 
+{%- endif %}
+
 {%- endfor %}
 
 {%- endif %}
