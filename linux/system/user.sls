@@ -116,6 +116,8 @@ system_user_home_{{ user.home }}:
 
 {%- endif %}
 
+{%- endif %}
+
 {%- else %}
 
 system_user_{{ name }}:
@@ -125,13 +127,6 @@ system_user_{{ name }}:
 system_user_home_{{ user.home }}:
   file.absent:
   - name: {{ user.home }}
-
-{%- if system.get('sudo', {}).get('enabled', False) %}
-/etc/sudoers.d/90-salt-user-{{ name|replace('.', '-') }}:
-  file.absent
-{%- endif %}
-
-{%- endif %}
 
 {%- endif %}
 
