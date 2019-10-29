@@ -4,13 +4,6 @@
 {%- if network.systemd is mapping %}
 {%- for config_type, configs in network.systemd.items() %}
 
-{%- if config_type == 'link' %}
-/etc/udev/rules.d/80-net-setup-link.rules:
-  file.managed:
-    - makedirs: True
-    - content: ""
-{%- endif %}
-
 {%- for config_name, config in configs.items() %}
 linux_network_systemd_networkd_{{ config_type }}_config_{{ config_name }}:
   file.managed:
