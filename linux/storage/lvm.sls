@@ -1,5 +1,5 @@
 {%- from "linux/map.jinja" import storage with context %}
-{%- if storage.enabled %}
+{%- if storage.get('enabled', False) %}
 
 linux_lvm_pkgs:
   pkg.installed:

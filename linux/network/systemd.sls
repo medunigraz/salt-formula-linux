@@ -1,5 +1,5 @@
 {%- from "linux/map.jinja" import network with context %}
-{%- if network.enabled and grains.get('init', None) == 'systemd' %}
+{%- if network.get('enabled', False) and grains.get('init', None) == 'systemd' %}
 
 {%- if network.systemd is mapping %}
 {%- for config_type, configs in network.systemd.items() %}

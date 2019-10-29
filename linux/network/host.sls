@@ -1,5 +1,5 @@
 {%- from "linux/map.jinja" import network with context %}
-{%- if network.enabled %}
+{%- if network.get('enabled', False) %}
 
 {%- set host_dict = network.host %}
 

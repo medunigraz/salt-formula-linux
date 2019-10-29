@@ -1,5 +1,5 @@
 {%- from "linux/map.jinja" import network with context %}
-{%- if network.enabled %}
+{%- if network.get('enabled', False) %}
 
 {%- if grains.os_family == 'Debian' %}
 
