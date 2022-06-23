@@ -1,3 +1,5 @@
+{%- set py_version = salt['grains.get']('pythonversion')|join('.') %}
+{%- set os_version = salt['grains.get']('osmajorrelease') %}
 {% set system = salt['grains.filter_by']({
     'Arch': {
         'pkgs': ['sudo', 'vim', 'wget'],
@@ -36,7 +38,17 @@
         },
     },
     'Debian': {
-        'pkgs': ['python-apt', 'apt-transport-https', 'libmnl0'],
+        'pkgs': [
+          {%- if salt['pkg.version_cmp'](py_version, '3') >= 0 %}
+          'python3-apt',
+          {% else %}
+          'python-apt',
+          {% endif %}
+          {%- if salt['pkg.version_cmp'](os_version, '11') < 0 %}
+          'apt-transport-https',
+          {% endif %}
+          'libmnl0',
+        ],
         'utc': true,
         'user': {},
         'group': {},
