@@ -39,12 +39,12 @@
     },
     'Debian': {
         'pkgs': [
-          {%- if salt['pkg.version_cmp'](py_version, '3') >= 0 %}
+          {% if salt['pkg.version_cmp'](py_version, '3') >= 0 %}
           'python3-apt',
           {% else %}
           'python-apt',
           {% endif %}
-          {%- if salt['pkg.version_cmp'](os_version, '11') < 0 %}
+          {% if salt['pkg.version_cmp'](os_version, '11') < 0 %}
           'apt-transport-https',
           {% endif %}
           'libmnl0',
