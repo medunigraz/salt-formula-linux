@@ -16,10 +16,6 @@ linux_system_environment_proxies:
   - show_changes: True
   - defaults:
       variables: {{ system.env | yaml }}
-      no_proxy: {{ system.env.get('no_proxy', None) }}
-      https_proxy: {{ system.env.get('https_proxy', None) }}
-      http_proxy: {{ system.env.get('http_proxy', None) }}
-      ftp_proxy: {{ system.env.get('ftp_proxy', None) }}
 
 {%- else %}
 
