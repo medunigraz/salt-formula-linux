@@ -4,7 +4,10 @@
 {%- for file_name, file in system.file.items() %}
 
 linux_file_{{ file_name }}:
-{%- if file.serialize is defined %}
+{%- if file.absent is defined and file.absent is sameas true %}
+  file.absent:
+
+{%- elif file.serialize is defined %}
   file.serialize:
     - formatter: {{ file.serialize }}
   {%- if file.contents is defined  %}
@@ -12,6 +15,7 @@ linux_file_{{ file_name }}:
   {%- elif file.contents_pillar is defined %}
     - dataset_pillar: {{ file.contents_pillar }}
   {%- endif %}
+
 {%- else %}
   file.managed:
     {%- if file.source is defined %}
@@ -39,6 +43,7 @@ linux_file_{{ file_name }}:
     - name: {{ file_name }}
     {%- endif %}
     - makedirs: {{ file.get('makedirs', 'True') }}
+    - replace: {{ file.get('replace', 'True') }}
     - user: {{ file.get('user', 'root') }}
     - group: {{ file.get('group', 'root') }}
     {%- if file.mode is defined %}

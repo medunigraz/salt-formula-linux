@@ -53,7 +53,12 @@ system_user_{{ name }}:
   - password: {{ user.password }}
   - hash_password: {{ user.get('hash_password', False) }}
   {% endif %}
-  - gid_from_name: {{ user.get('gid_from_name', False) }}
+  - usergroup: {{ user.get('usergroup', False) }}
+  {%- if user.gid is defined and user.gid %}
+  - gid: {{ user.gid }}
+  {%- else %}
+  - gid: {{ name }}
+  {%- endif %}
   {%- if user.groups is defined %}
   - groups: {{ user.groups }}
   {%- endif %}
@@ -82,6 +87,9 @@ system_user_{{ name }}:
   - inactdays: {{ user.inactdays }}
   {%- endif %}
   - require: {{ requires|yaml }}
+  {%- if user.allow_uid_change is defined and user.allow_uid_change %}
+  - allow_uid_change: true
+  {%- endif %}
 
 system_user_home_{{ user.home }}:
   file.directory:

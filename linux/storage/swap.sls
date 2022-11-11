@@ -1,6 +1,8 @@
 {%- from "linux/map.jinja" import storage with context %}
 {%- if storage.enabled %}
 
+{%- if storage.swap.enabled is not defined or storage.swap.enabled %}
+
 {%- for swap_name, swap in storage.swap.items() %}
 
 {%- if swap.enabled %}
@@ -57,9 +59,15 @@ linux_set_swap_file_status_{{ swap.device }}:
 
 {{ swap.device }}:
   module.run:
+  {%- if 'module.run' in salt['config.get']('use_superseded', default=[]) %}
+    - mount.rm_fstab:
+      - m_name: none
+      - device: {{ swap.device }}
+  {%- else %}
     - name: mount.rm_fstab
     - m_name: none
     - device: {{ swap.device }}
+  {%- endif %}
     - onlyif: grep -q {{ swap.device }} /etc/fstab
 
 linux_disable_swap_{{ swap.engine }}_{{ swap.device }}:
@@ -74,5 +82,13 @@ linux_disable_swap_{{ swap.engine }}_{{ swap.device }}:
 {%- endif %}
 
 {%- endfor %}
+
+{%- elif storage.swap.enabled is defined and not storage.swap.enabled %}
+
+linux_disable_swap:
+  cmd.run:
+    - name: 'swapoff -a'
+
+{%- endif %}
 
 {%- endif %}

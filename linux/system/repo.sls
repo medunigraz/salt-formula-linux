@@ -36,7 +36,7 @@ purge_sources_list_d_repos:
   - clean: True
   {%- endif %}
 
-  {%- for name, repo in system.repo.items() %}
+  {%- for name, repo in system.repo.items() | sort %}
     {%- set name=repo.get('name', name) %}
     {%- if grains.os_family == 'Debian' %}
 
@@ -223,7 +223,11 @@ default_repo_list:
 refresh_db:
   {%- if system.get('refresh_repos_meta', True) %}
   module.run:
+    {%- if 'module.run' in salt['config.get']('use_superseded', default=[]) %}
+    - pkg.refresh_db: []
+    {%- else %}
     - name: pkg.refresh_db
+    {% endif %}
   {%- else %}
   test.succeed_without_changes
   {%- endif %}

@@ -1,5 +1,5 @@
 ============
-Linux Fomula
+Linux Formula
 ============
 
 Linux Operating Systems:
@@ -33,7 +33,7 @@ Basic Linux box
 Linux with system users, some with password set:
 
 .. warning:: If no ``password`` variable is passed,
-             any predifined password will be removed.
+             any predefined password will be removed.
 
 .. code-block:: yaml
 
@@ -67,7 +67,7 @@ Linux with system users, some with password set:
           elizabeth:
             name: 'elizabeth'
             enabled: true
-            full_name: 'With hased password'
+            full_name: 'With hashed password'
             home: '/home/elizabeth'
             password: "$6$nUI7QEz3$dFYjzQqK5cJ6HQ38KqG4gTWA9eJu3aKx6TRVDFh6BVJxJgFWg2akfAA7f1fCxcSUeOJ2arCO6EEI6XXnHXxG10"
 
@@ -327,6 +327,22 @@ identifier same as command resulting in not being able to change it):
             hour: 2
             minute: 0
 
+Added the opportunity to set a job with a special keyword like '@reboot' or '@hourly'. Quotes must be used, otherwise PyYAML will strip the '@' sign.
+
+.. code-block:: yaml
+
+    linux:
+      system:
+        ...
+        job:
+          cmd1:
+            command: '/cmd/to/run'
+            identifier: cmd1
+            enabled: true
+            user: 'root'
+            special: '@reboot'
+
+
 Managing 'at' tasks
 -------------------
 
@@ -430,6 +446,18 @@ Systemd settings:
               DefaultLimitCPU: 2
               DefaultLimitNPROC: 4
 
+Systemd journal settings:
+
+.. code-block:: yaml
+
+    linux:
+      system:
+        ...
+        systemd:
+          journal:
+            SystemMaxUse: "50M"
+            RuntimeMaxFiles: "100"
+            
 Ensure presence of directory:
 
 .. code-block:: yaml
@@ -861,7 +889,7 @@ Optional: You can also use list that will ensure order of items.
 
 Sysfs definition with disabled automatic write. Attributes are saved
 to configuration, but are not applied during the run.
-Thay will be applied automatically after the reboot.
+They will be applied automatically after the reboot.
 
 
 .. code-block:: yaml
@@ -952,7 +980,7 @@ RedHat-based Linux with additional OpenStack repo:
           rdo-icehouse:
             enabled: true
             source: 'http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/epel-6/'
-            pgpcheck: 0
+            gpgcheck: 0
 
 Ensure system repository to use czech Debian mirror (``default: true``)
 Also pin it's packages with priority ``900``:

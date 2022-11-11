@@ -6,7 +6,7 @@ Support for Open vSwitch database configuration.
 from __future__ import absolute_import
 
 import logging
-import salt.utils
+import salt.utils.path
 
 log = logging.getLogger(__name__)
 
@@ -15,14 +15,14 @@ def __virtual__():
     '''
     Only load the module if Open vSwitch is installed
     '''
-    if salt.utils.which('ovs-vsctl'):
+    if salt.utils.path.which('ovs-vsctl'):
         return 'ovs_config'
     return False
 
 
 def _retcode_to_bool(retcode):
     '''
-    Evaulates ovs-vsctl command`s retcode value.
+    Evaluates ovs-vsctl command`s retcode value.
 
     Args:
         retcode: Value of retcode field from response.
