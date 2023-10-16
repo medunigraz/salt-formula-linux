@@ -67,7 +67,7 @@ lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
     {%- endif %}
     - require:
       - lvm: lvm_vg_{{ vg.get('name', vgname) }}
-    {%- if (volume.mount is defined) and (volume.get('name', lvname) not in grains.lvm.get(vg.get('name', vgname), []) %}
+    {%- if (volume.mount is defined) and (volume.get('name', lvname) not in grains.lvm.get(vg.get('name', vgname), [])) %}
     - require_in:
       - mount: {{ volume.mount.path }}
     {%- if not volume.mount.get('file_system', None) in ['nfs', 'nfs4', 'cifs', 'tmpfs', None] %}
