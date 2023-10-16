@@ -57,6 +57,9 @@ lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
     {%- if volume.extents is defined %}
     - extents: {{ volume.extents }}
     {%- endif %}
+    {%- if volume.stripes is defined %}
+    - stripes: {{ volume.stripes }}
+    {%- endif %}
     - force: true
     - require:
       - lvm: lvm_vg_{{ vg.get('name', vgname) }}
