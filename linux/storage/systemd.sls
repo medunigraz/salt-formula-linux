@@ -10,7 +10,7 @@
   pkg.installed:
   - pkgs: {{ storage.get(mount.file_system, {}).get('pkgs', []) }}
 
-{%- if not mount.file_system in ['nfs', 'nfs4', 'cifs', 'tmpfs', 'ceph'] %}
+{%- if not mount.file_system in ['nfs', 'nfs4', 'cifs', 'tmpfs', 'ceph', 'fuse.ceph'] %}
 mkfs_{{ mount.device }}:
   cmd.run:
   - name: 'mkfs.{{ mount.file_system }} -L "{{ mount.get('label', '') }}" {{ mount.device }}'
