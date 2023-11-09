@@ -60,14 +60,14 @@ lvm_{{ vg.get('name', vgname) }}_lv_{{ volume.get('name', lvname) }}:
     {%- if volume.stripes is defined %}
     - stripes: {{ volume.stripes }}
     {%- endif %}
-    {%- if (volume.force is defined and volume.force is sameas true) or (volume.get('name', lvname) not in grains.lvm.get(vg.get('name', vgname), [])) %}
+    {%- if (volume.force is defined and volume.force is sameas true) %}
     - force: True
     {%- else %}
     - force: False
     {%- endif %}
     - require:
       - lvm: lvm_vg_{{ vg.get('name', vgname) }}
-    {%- if (volume.mount is defined) and (volume.get('name', lvname) not in grains.lvm.get(vg.get('name', vgname), [])) %}
+    {%- if (volume.mount is defined) %}
     - require_in:
       - mount: {{ volume.mount.path }}
     {%- if not volume.mount.get('file_system', None) in ['nfs', 'nfs4', 'cifs', 'tmpfs', None] %}
