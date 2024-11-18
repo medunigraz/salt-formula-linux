@@ -36,6 +36,12 @@ purge_sources_list_d_repos:
   - clean: True
   {%- endif %}
 
+/etc/apt/keyrings:
+  file.directory:
+  - user: root
+  - group: root
+  - mode: 700
+
   {%- for name, repo in system.repo.items() | sort %}
     {%- set name=repo.get('name', name) %}
     {%- if grains.os_family == 'Debian' %}
@@ -71,33 +77,12 @@ linux_repo_{{ name }}_pin:
     - name: /etc/apt/preferences.d/{{ name }}
       {%- endif %}
 
-      {%- if repo.get('key') %}
-linux_repo_{{ name }}_key:
-        {% set repo_key = salt['hashutil.base64_b64encode'](repo.key) %}
-  cmd.run:
-    - name: "echo '{{ repo_key }}' | base64 -d | apt-key add -"
-    - require_in:
-        {%- if repo.get('default', False) %}
-      - file: default_repo_list
-        {% else %}
-      - pkgrepo: linux_repo_{{ name }}
-        {% endif %}
-
-{# key_url fetch by curl when salt <2017.7, higher version of salt has
-   fixed bug for using a proxy_host/port specified at minion.conf
-
-   NOTE: curl/cmd.run usage to fetch gpg key has limited functionality behind proxy.
-         Environments with salt >= 2017.7 should use key_url specified at
-         pkgrepo.manage state (which uses properly configured http_host at
-         minion.conf). Older versions of salt require to have proxy set at
-         ENV and curl way to fetch gpg key here can have a sense for backward
-         compatibility. Be aware that as of salt 2018.3 no_proxy option is
-         not implemented at all.
-#}
-      {%- elif repo.key_url|default(False) and grains['saltversioninfo'] < [2017, 7] and not repo.key_url.startswith('salt://') %}
+      {%- if repo.get("key_url", None) %}
 linux_repo_{{ name }}_key:
   cmd.run:
-    - name: "curl -sL {{ repo.key_url }} | apt-key add -"
+    - name: "curl -sL {{ repo.key_url }} | gnupg --dearmor -o /etc/apt/keyrings/{{ name }}.gpg"
+    - require:
+      - file: /etc/apt/keyrings
     - require_in:
         {%- if repo.get('default', False) %}
       - file: default_repo_list
@@ -117,10 +102,8 @@ linux_repo_{{ name }}:
   - require_in:
     - refresh_db
           {%- if repo.ppa is defined %}
-  - ppa: {{ repo.ppa }}
-          {%- else %}
   - humanname: {{ name }}
-  - name: {{ repo.source }}
+  - name: deb {% if repo.get("key_url") %}[signed-by=/etc/apt/keyrings/{{ name }}.gpg] {% endif %}{{ repo.source }} {{ repo.dist }} {% for comp in repo.components %}{{ comp }}{% endfor %}
             {%- if repo.architectures is defined %}
   - architectures: {{ repo.architectures }}
             {%- endif %}
@@ -151,12 +134,6 @@ linux_repo_{{ name }}:
       - file: /etc/apt/apt.conf.d/99proxies-salt-{{ name }}
     - require_in:
       - refresh_db
-          {%- if repo.ppa is defined %}
-    - ppa: {{ repo.ppa }}
-            {%- if repo.key_id is defined %}
-    - keyid_ppa: {{ repo.keyid_ppa }}
-            {%- endif %}
-          {%- else %}
     - file: /etc/apt/sources.list.d/{{ name }}.list
             {%- if repo.key_id is defined %}
     - keyid: {{ repo.key_id }}
