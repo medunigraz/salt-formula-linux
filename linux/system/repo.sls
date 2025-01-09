@@ -98,47 +98,22 @@ linux_repo_{{ name }}_key:
         {%- if repo.get('enabled', True) %}
 linux_repo_{{ name }}:
   pkgrepo.managed:
-  - refresh_db: False
-  - require_in:
-    - refresh_db
-          {%- if repo.ppa is defined %}
-  - humanname: {{ name }}
-  - name: deb {% if repo.get("key_url") %}[signed-by=/etc/apt/keyrings/{{ name }}.gpg] {% endif %}{{ repo.source }} {{ repo.dist }} {% for comp in repo.components %}{{ comp }}{% endfor %}
-            {%- if repo.architectures is defined %}
-  - architectures: {{ repo.architectures }}
-            {%- endif %}
-  - file: /etc/apt/sources.list.d/{{ name }}.list
-  - clean_file: {{ repo.get('clean_file', True) }}
-            {%- if repo.key_id is defined %}
-  - keyid: {{ repo.key_id }}
-            {%- endif %}
-            {%- if repo.key_server is defined %}
-  - keyserver: {{ repo.key_server }}
-            {%- endif %}
-            {%- if repo.key_url is defined and (grains['saltversioninfo'] >= [2017, 7] or repo.key_url.startswith('salt://')) %}
-  - key_url: {{ repo.key_url }}
-            {%- endif %}
-  - consolidate: {{ repo.get('consolidate', False) }}
-  - require:
-    - file: /etc/apt/apt.conf.d/99proxies-salt-{{ name }}
-    - file: /etc/apt/apt.conf.d/99proxies-salt
-            {%- if system.purge_repos|default(False) %}
-    - file: purge_sources_list_d_repos
-            {%- endif %}
-          {%- endif %}
-        {%- else %}
-linux_repo_{{ name }}:
-  pkgrepo.absent:
     - refresh_db: False
+    - file: /etc/apt/sources.list.d/{{ name }}.list
+          {%- if repo.key_id is defined %}
+    - keyid: {{ repo.key_id }}
+          {%- endif %}
     - require:
       - file: /etc/apt/apt.conf.d/99proxies-salt-{{ name }}
     - require_in:
       - refresh_db
+        {%- else %}
+linux_repo_{{ name }}:
+  pkgrepo.absent:
     - file: /etc/apt/sources.list.d/{{ name }}.list
-            {%- if repo.key_id is defined %}
-    - keyid: {{ repo.key_id }}
-            {%- endif %}
-          {%- endif %}
+    - refresh_db: False
+    - require_in:
+      - refresh_db
         {%- endif %}
       {%- endif %}
     {%- endif %}
