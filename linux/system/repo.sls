@@ -100,7 +100,7 @@ linux_repo_{{ name }}:
   pkgrepo.managed:
     - refresh_db: False
     - file: /etc/apt/sources.list.d/{{ name }}.list
-    - name: "deb {% if repo.get("key_url", None) %}[signed-by=/etc/apt/keyrings/{{ name }}.gpg]{% endif %}{{ repo.get("source") }} {{ repo.get("dist") }} {% for c in repo.get("components") %}{{ c }}{% if not loop.last %} {% endif %}{% endfor %}"
+    - name: "deb {% if repo.get("key_url", None) %}[signed-by=/etc/apt/keyrings/{{ name }}.gpg] {% endif %}{{ repo.get("source") }} {{ repo.get("dist") }} {% for c in repo.get("components") %}{{ c }}{% if not loop.last %} {% endif %}{% endfor %}"
     - require:
       - file: /etc/apt/apt.conf.d/99proxies-salt-{{ name }}
           {%- if repo.get("key_url", None) %}
