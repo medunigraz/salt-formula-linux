@@ -104,7 +104,7 @@ linux_repo_{{ name }}:
     - require:
       - file: /etc/apt/apt.conf.d/99proxies-salt-{{ name }}
           {%- if repo.get("key_url", None) %}
-      - file: linux_repo_{{ name }}_key
+      - cmd: linux_repo_{{ name }}_key
           {%- endif %}
     - require_in:
       - refresh_db
