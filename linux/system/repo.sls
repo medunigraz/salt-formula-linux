@@ -80,7 +80,7 @@ linux_repo_{{ name }}_pin:
       {%- if repo.get("key_url", None) %}
 linux_repo_{{ name }}_key:
   cmd.run:
-    - name: "curl -sL {{ repo.key_url }} | gpg --batch --dearmor -o /etc/apt/keyrings/{{ name }}.gpg"
+    - name: "curl -sL {{ repo.key_url }} | gpg --batch --yes --dearmor -o /etc/apt/keyrings/{{ name }}.gpg"
     - require:
       - file: /etc/apt/keyrings
     - require_in:
