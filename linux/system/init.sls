@@ -51,9 +51,6 @@ include:
 {%- if system.locale|length > 0 %}
 - linux.system.locale
 {%- endif %}
-{%- if system.prompt is defined %}
-- linux.system.prompt
-{%- endif %}
 {%- if system.bash is defined %}
 - linux.system.bash
 {%- endif %}
