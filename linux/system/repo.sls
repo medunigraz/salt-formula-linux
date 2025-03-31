@@ -40,7 +40,7 @@ purge_sources_list_d_repos:
   file.directory:
   - user: root
   - group: root
-  - mode: 700
+  - mode: 755
 
   {%- for name, repo in system.repo.items() | sort %}
     {%- set name=repo.get('name', name) %}
@@ -80,7 +80,7 @@ linux_repo_{{ name }}_pin:
       {%- if repo.get("key_url", None) %}
 linux_repo_{{ name }}_key:
   cmd.run:
-    - name: "curl -sL {{ repo.key_url }} | gpg --batch --yes --dearmor -o /etc/apt/keyrings/{{ name }}.gpg"
+    - name: "curl -sL {{ repo.key_url }} | gpg --batch --yes --dearmor -o /etc/apt/keyrings/{{ name }}.gpg; chmod a+r /etc/apt/keyrings/{{ name }}.gpg"
     - require:
       - file: /etc/apt/keyrings
     - require_in:
