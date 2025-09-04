@@ -1,54 +1,6 @@
-{%- set py_version = salt['grains.get']('pythonversion')|join('.') %}
-{%- set os_version = salt['grains.get']('osmajorrelease') %}
-{%- set debian_pkgs = ['libmnl0'] %}
-{%- if salt['pkg.version_cmp'](py_version, '3') >= 0 %}
-{%- do debian_pkgs.append('python3-apt') %}
-{% else %}
-{%- do debian_pkgs.append('python-apt') %}
-{% endif %}
-{% if salt['pkg.version_cmp'](os_version, '11') < 0 %}
-{%- do debian_pkgs.append('apt-transport-https') %}
-{% endif %}
-
 {% set system = salt['grains.filter_by']({
-    'Arch': {
-        'pkgs': ['sudo', 'vim', 'wget'],
-        'utc': true,
-        'user': {},
-        'group': {},
-        'job': {},
-        'limit': {},
-        'locale': {},
-        'motd': {},
-        'env': {},
-        'profile': {},
-        'proxy': {},
-        'repo': {},
-        'package': {},
-        'autoupdates': {
-          'pkgs': []
-         },
-        'selinux': 'permissive',
-        'ca_certs_dir': '/usr/local/share/ca-certificates',
-        'ca_certs_bin': 'update-ca-certificates',
-        'atop': {
-             'enabled': false,
-             'interval': '20',
-             'autostart': true,
-             'logpath': '/var/log/atop',
-             'outfile': '/var/log/atop/daily.log'
-         },
-        'at': {
-             'pkgs': [],
-             'services': []
-        },
-        'cron': {
-             'pkgs': [],
-             'services': []
-        },
-    },
     'Debian': {
-        'pkgs': debian_pkgs,
+        'pkgs': ['python3-apt', 'wget', 'curl'],
         'utc': true,
         'user': {},
         'group': {},
@@ -67,26 +19,9 @@
         'selinux': 'permissive',
         'ca_certs_dir': '/usr/local/share/ca-certificates',
         'ca_certs_bin': 'update-ca-certificates',
-        'atop': {
-             'enabled': false,
-             'interval': '20',
-             'autostart': true,
-             'logpath': '/var/log/atop',
-             'outfile': '/var/log/atop/daily.log'
-         },
-        'at': {
-             'pkgs': ['at'],
-             'services': ['atd'],
-             'user': {}
-         },
-        'cron': {
-             'pkgs': ['cron'],
-             'services': ['cron'],
-             'user': {}
-         },
     },
     'RedHat': {
-        'pkgs': ['policycoreutils', 'policycoreutils-python', 'telnet', 'wget'],
+        'pkgs': ['policycoreutils', 'policycoreutils-python', 'wget'],
         'utc': true,
         'user': {},
         'group': {},
@@ -105,36 +40,8 @@
         'selinux': 'permissive',
         'ca_certs_dir': '/etc/pki/ca-trust/source/anchors',
         'ca_certs_bin': 'update-ca-trust extract',
-        'atop': {
-             'enabled': false,
-             'interval': '20',
-             'autostart': true,
-             'logpath': '/var/log/atop',
-             'outfile': '/var/log/atop/daily.log'
-         },
-        'at': {
-             'pkgs': [],
-             'services': []
-        },
-        'cron': {
-             'pkgs': [],
-             'services': []
-        },
     },
-}, merge=salt['grains.filter_by']({
-    'bullseye': {
-        'pkgs': ['python3-apt', 'apt-transport-https', 'libmnl0'],
-    },
-    'bookworm': {
-        'pkgs': ['python3-apt', 'apt-transport-https', 'libmnl0'],
-    },
-    'sid': {
-        'pkgs': ['python3-apt', 'apt-transport-https', 'libmnl0'],
-    },
-    'jammy': {
-        'pkgs': ['python3-apt', 'apt-transport-https', 'libmnl0'],
-    },
-}, grain='oscodename', merge=salt['pillar.get']('linux:system'))) %}
+}) %}
 
 {% set banner = salt['grains.filter_by']({
     'BaseDefaults': {
@@ -143,15 +50,6 @@
 }, grain='os_family', merge=salt['pillar.get']('linux:system:banner'), base='BaseDefaults') %}
 
 {% set auth = salt['grains.filter_by']({
-    'Arch': {
-        'enabled': false,
-        'duo': {
-            'enabled': false,
-            'duo_host': 'localhost',
-            'duo_ikey': '',
-            'duo_skey': ''
-        }
-    },
     'RedHat': {
         'enabled': false,
         'duo': {
@@ -299,24 +197,6 @@ Debian:
     'primary',
 ] %}
 {% set network = salt['grains.filter_by']({
-    'Arch': {
-        'pkgs': ['wpa_supplicant', 'dhclient', 'wireless_tools', 'ifenslave'],
-        'bridge_pkgs': ['bridge-utils', 'vlan'],
-        'ovs_pkgs': ['openvswitch-switch', 'vlan'],
-        'hostname_file': '/etc/hostname',
-        'network_manager': False,
-        'systemd': {},
-        'interface': {},
-        'interface_params': interface_params,
-        'bridge': 'none',
-        'proxy': {
-           'host': 'none',
-        },
-        'host': {},
-        'mine_dns_records': False,
-        'dhclient_config': '/etc/dhcp/dhclient.conf',
-        'ovs_nowait': False,
-    },
     'Debian': {
         'pkgs': ['ifenslave'],
         'hostname_file': '/etc/hostname',
@@ -357,22 +237,6 @@ Debian:
 }, grain='os_family', merge=salt['pillar.get']('linux:network')) %}
 
 {% set storage = salt['grains.filter_by']({
-    'Arch': {
-        'mount': {},
-        'swap': {},
-        'disk': {},
-        'lvm': {},
-        'lvm_services': ['lvm2-lvmetad', 'lvm2-lvmpolld', 'lvm2-monitor'],
-        'loopback': {},
-        'nfs': {
-             'pkgs': ['nfs-utils']
-         },
-        'multipath': {
-             'enabled': False,
-             'pkgs': ['multipath-tools', 'multipath-tools-boot'],
-             'service': ''
-         },
-    },
     'Debian': {
         'mount': {},
         'systemd': {},
@@ -389,6 +253,9 @@ Debian:
          },
         'xfs': {
              'pkgs': ['xfsprogs']
+         },
+        'btrfs': {
+             'pkgs': ['btrfs-progs']
          },
         'multipath': {
              'enabled': False,
@@ -418,26 +285,14 @@ Debian:
     'CentOS Stream 8': {
       'lvm_services': ['lvm2-lvmpolld', 'lvm2-monitor'],
     },
-    'jammy': {
-      'lvm_services': ['lvm2-monitor'],
-    },
-    'focal': {
-      'lvm_services': ['lvm2-monitor'],
-    },
-    'buster': {
-        'lvm_services': ['lvm2-monitor'],
-    },
-    'bullseye': {
-        'lvm_services': ['lvm2-monitor'],
-    },
     'bookworm': {
         'lvm_services': ['lvm2-monitor'],
     },
+    'trixie': {
+        'lvm_services': ['udev'],
+    },
     'sid': {
         'lvm_services': ['lvm2-monitor'],
-    },
-    'trusty': {
-        'lvm_services': ['udev'],
     },
 }, grain='oscodename', merge=salt['pillar.get']('linux:storage'))) %}
 
