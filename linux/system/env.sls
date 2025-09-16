@@ -1,5 +1,5 @@
 {%- from "linux/map.jinja" import system with context %}
-{%- if system.enabled %}
+{%- if system.get("enabled", False) %}
 
 {%- if system.env is defined %}
 {%- if system.env|length > 0 %}
