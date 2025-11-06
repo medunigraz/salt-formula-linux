@@ -1,5 +1,5 @@
 {%- from "linux/map.jinja" import system with context %}
-{%- if system.enabled %}
+{%- if system.get("enabled", False) %}
 
 {%- for file_name, file in system.file.items() %}
 
