@@ -1,7 +1,6 @@
 {%- from "linux/map.jinja" import system with context %}
-{%- if system.get("enabled", False) %}
 
-{%- for file_name, file in system.file.items() %}
+{%- for file_name, file in system.get("file", {}).items() %}
 
 linux_file_{{ file_name }}:
 {%- if file.absent is defined and file.absent is sameas true %}
@@ -64,4 +63,3 @@ linux_file_{{ file_name }}:
 
 {%- endfor %}
 
-{%- endif %}
