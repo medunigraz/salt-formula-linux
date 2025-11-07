@@ -1,6 +1,3 @@
-{%- from "linux/map.jinja" import system with context %}
-{%- if system.get("enabled", False) %}
-
 {%- set pkgs_source = [] %}
 {%- set pkgs_groups = {
   'latest': [],
@@ -8,7 +5,7 @@
   'removed': [],
   'installed': [],
   } %}
-{%- for name, package in system.package.items() %}
+{%- for name, package in pillar.linux.system.package.items() %}
 
   {%- if package.repo is defined or package.hold is defined or package.verify is defined %}
 linux_extra_package_{{ name }}:
@@ -62,6 +59,4 @@ linux_extra_packages_{{ pkgs_group }}:
 linux_extra_packages_source:
   pkg.installed:
     - sources: {{ pkgs_source }}
-{%- endif %}
-
 {%- endif %}
