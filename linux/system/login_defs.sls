@@ -1,13 +1,9 @@
-{%- from "linux/map.jinja" import system with context %}
-{%- if system.enabled %}
-  {%- if system.login_defs is defined %}
+{%- if pillar.linux.systemget("enabled", False) %}
+  {%- if pillar.linux.system.login_defs is mapping %}
 login_defs:
-  file.managed:
+  file.keyvalue:
     - name: /etc/login.defs
-    - source: salt://linux/files/login.defs.jinja
-    - template: jinja
-    - user: root
-    - group: root
-    - mode: 644
+    - key_values: pillar.linux.system.login_defs
+    - append_if_not_found: True
   {%- endif %}
 {%- endif %}
